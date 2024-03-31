@@ -7,6 +7,7 @@ import HomeScreen from "./screens/home/HomeScreen";
 import ChatScreen from "./screens/chat/ChatScreen";
 import StartScreen from "./screens/settings/StartScreen";
 import SignUpScreen from "./screens/settings/SignUpScreen";
+import MailSignUpScreen from "./screens/settings/MailSignUpScreen";
 
 
 
@@ -41,8 +42,9 @@ const SettingsStack = createNativeStackNavigator();
 function SettingsStackScreen() {
   return (
     <SettingsStack.Navigator>
-      <SettingsStack.Screen name="StartScreen" component={StartScreen} />
-      <SettingsStack.Screen name="SignUpScreen" component={SignUpScreen} />
+      <SettingsStack.Screen name="StartScreen" component={StartScreen} options={{ headerShown: false }} />
+      <SettingsStack.Screen name="新規登録" component={SignUpScreen} />
+      <SettingsStack.Screen name="メールで登録" component={MailSignUpScreen} />
     </SettingsStack.Navigator>
   );
 }
