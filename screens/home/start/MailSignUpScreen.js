@@ -1,21 +1,25 @@
 // メールで新規アカウント作成用コンポーネント
 
 import { StyleSheet, Text, View, Button, TextInput } from 'react-native';
-import GlobalStyles from '../../styles/GlobalStyles';
+import GlobalStyles from '../../../styles/GlobalStyles';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useState } from 'react';
 import PasswordEye from 'react-native-password-eye';
-import { auth } from '../../firebaseConfig';
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from '../../../firebaseConfig';
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged  } from "firebase/auth";
+import { useDispatch } from 'react-redux';
+import { setUid } from '../../../redux/uidSlice';
 
 
 
-export default function MailSignUpScreen({navigation}) {
+export default function MailSignUpScreen({navigation, type}) {
 
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
   const [emailError, setEmailError] = useState();
   const [passwordError, setPasswordError] = useState();
+
+  const dispatch = useDispatch();
 
 
   // <TextInput>の入力時に実行する関数
@@ -36,36 +40,60 @@ export default function MailSignUpScreen({navigation}) {
   }
 
 
+
+
+
+
   // アカウント作成・ログイン実行関数
   const createAccount = async () => {
+    // アカウント作成
     await createUserWithEmailAndPassword(auth, email, password)
     .then((userCredential) => {
       // Signed in 
-      const user = userCredential.user;
+      // const user = userCredential.user;
       console.log("作成成功");
-      console.log(user);
     })
     .catch((error) => {
       const errorCode = error.code;
       const errorMessage = error.message;
-      console.log("作成失敗");
       console.log(errorCode);
       console.log(errorMessage);
     });
 
+    // ログイン
     await signInWithEmailAndPassword(auth, email, password)
     // ログイン処理成功時
     .then((userCredential) => {
-      const user = userCredential.user;
+      // const user = userCredential.user;
       console.log("ログイン成功");
     })
     // ログイン処理失敗時
     .catch((error) => {
       const errorCode = error.code;
       const errorMessage = error.message;
-      console.log("ログイン失敗");
+    });
+
+    // 情報取得
+    onAuthStateChanged(auth, (user) => {
+      
+      if (user) {
+        const uid = user.uid;
+        console.log(`${user}でログイン中/MailSignUp`);
+        dispatch(setUid(uid));
+        navigation.navigate("initialSetting");
+        
+      } else {
+        console.log(`ゲストでログイン中/MailSignUp`);
+      }
     });
   }
+
+
+
+
+
+
+
 
 
   // バリデーション関数

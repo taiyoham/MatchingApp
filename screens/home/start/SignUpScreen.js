@@ -1,7 +1,7 @@
 // 新規アカウント作成用コンポーネント
 
 import { StyleSheet, Text, View, Button } from 'react-native';
-import GlobalStyles from '../../styles/GlobalStyles';
+import GlobalStyles from '../../../styles/GlobalStyles';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 
