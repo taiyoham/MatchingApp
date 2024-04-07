@@ -49,6 +49,21 @@ export default function MailSignUpScreen({navigation, type}) {
 
 
 
+  // DBデータ作成関数
+  const createData = async (uid) => {
+
+    try {
+      const docRef = await addDoc(collection(db, "users"), {
+        uid,
+      });
+      console.log("Document written with ID: ", docRef.id);
+      navigation.navigate("初期設定（ニックネーム）");
+    } catch (e) {
+      console.error("Error adding document: ", e);
+    }
+  }
+
+
 
   // アカウント作成・ログイン実行関数
   const createAccount = async () => {
@@ -85,21 +100,13 @@ export default function MailSignUpScreen({navigation, type}) {
         console.log(`${user}でログイン中/MailSignUp`);
         dispatch(setUid(uid));
         
+        createData(uid);
       } else {
         console.error(`正しくアカウント作成が行われていません。`);
       }
     });
 
-    // DBのデータ作成
-    try {
-      const docRef = await addDoc(collection(db, "users"), {
-        uid,
-      });
-      console.log("Document written with ID: ", docRef.id);
-      navigation.navigate("初期設定（ニックネーム）");
-    } catch (e) {
-      console.error("Error adding document: ", e);
-    }
+
   }
 
 

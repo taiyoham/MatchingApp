@@ -9,6 +9,7 @@ import StartScreen from "./screens/home/start/StartScreen";
 import SignUpScreen from "./screens/home/start/SignUpScreen";
 import MailSignUpScreen from "./screens/home/start/MailSignUpScreen";
 import InitialNameSetting from "./screens/home/start/InitialNameSettingScreen";
+import InitialImageSettingScreen from "./screens/home/start/InitialImageSettingScreen";
 import { Provider, useDispatch } from 'react-redux';
 import { store } from './redux/store';
 import { onAuthStateChanged } from 'firebase/auth';
@@ -31,6 +32,7 @@ function HomeStackScreen() {
         tabBarStyle: { display: 'none' },
         }} />
       <HomeStack.Screen name="新規登録" component={SignUpScreen} />
+      <HomeStack.Screen name="初期設定（画像）" component={InitialImageSettingScreen} />
       <HomeStack.Screen name="初期設定（ニックネーム）" component={InitialNameSetting} options={{
         headerShown: false,
         tabBarStyle: { display: 'none' },
