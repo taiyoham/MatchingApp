@@ -5,10 +5,13 @@ import GlobalStyles from '../../../styles/GlobalStyles';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useState } from 'react';
 import PasswordEye from 'react-native-password-eye';
-import { auth } from '../../../firebaseConfig';
+import { auth, db } from '../../../firebaseConfig';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged  } from "firebase/auth";
+import { collection, addDoc } from "firebase/firestore"; 
 import { useDispatch } from 'react-redux';
 import { setUid } from '../../../redux/uidSlice';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { COLORS } from '../../../constants/themes';
 
 
 
@@ -18,7 +21,10 @@ export default function MailSignUpScreen({navigation, type}) {
   const [password, setPassword] = useState();
   const [emailError, setEmailError] = useState();
   const [passwordError, setPasswordError] = useState();
-
+  
+  const [passwordBorderColor, setPasswordBorderColor] = useState("black");
+  const [emailBorderColor, setEmailBorderColor] = useState("black");
+  
   const dispatch = useDispatch();
 
 
@@ -64,8 +70,6 @@ export default function MailSignUpScreen({navigation, type}) {
     await signInWithEmailAndPassword(auth, email, password)
     // ログイン処理成功時
     .then((userCredential) => {
-      // const user = userCredential.user;
-      console.log("ログイン成功");
     })
     // ログイン処理失敗時
     .catch((error) => {
@@ -74,18 +78,28 @@ export default function MailSignUpScreen({navigation, type}) {
     });
 
     // 情報取得
-    onAuthStateChanged(auth, (user) => {
+    await onAuthStateChanged(auth, (user) => {
       
       if (user) {
         const uid = user.uid;
         console.log(`${user}でログイン中/MailSignUp`);
         dispatch(setUid(uid));
-        navigation.navigate("initialSetting");
         
       } else {
-        console.log(`ゲストでログイン中/MailSignUp`);
+        console.error(`正しくアカウント作成が行われていません。`);
       }
     });
+
+    // DBのデータ作成
+    try {
+      const docRef = await addDoc(collection(db, "users"), {
+        uid,
+      });
+      console.log("Document written with ID: ", docRef.id);
+      navigation.navigate("初期設定（ニックネーム）");
+    } catch (e) {
+      console.error("Error adding document: ", e);
+    }
   }
 
 
@@ -105,8 +119,10 @@ export default function MailSignUpScreen({navigation, type}) {
     const emailPattern = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
     if(emailPattern.test(email)) {
       setEmailError("");
+      setEmailBorderColor("black");
     }else {
       setEmailError("正しいメールアドレスを入力して下さい。");
+      setEmailBorderColor(COLORS.ERROR);
       emailProblem = true;
     }
 
@@ -114,8 +130,10 @@ export default function MailSignUpScreen({navigation, type}) {
     const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,14}$/;
     if(passwordPattern.test(password)) {
       setPasswordError("");
+      setPasswordBorderColor("black");
     }else {
       setPasswordError("有効なパスワードを入力して下さい。");
+      setPasswordBorderColor(COLORS.ERROR);
       passwordProblem = true;
 
     }
@@ -130,37 +148,39 @@ export default function MailSignUpScreen({navigation, type}) {
 
   return (
     <SafeAreaView style={GlobalStyles.SafeAreaView}>
-      <View style={GlobalStyles.Maincontainer}>
+      <KeyboardAwareScrollView>
+        <View style={GlobalStyles.Maincontainer}>
 
-        <TextInput
-          style={[GlobalStyles.TextInput, styles.TextInput]}
-          placeholder="メールアドレスを入力して下さい。"
-          onChangeText={ (inputText) => handleTextInput(inputText, "email") }
-          keyboardType="email-address"
-          inputMode="email"
-          value={email}
-        />
-        <Text>
-          {emailError}
-        </Text>
+          <TextInput
+            style={[GlobalStyles.TextInput, GlobalStyles.DefaultTextInput, {borderColor: emailBorderColor}]}
+            placeholder="メールアドレスを入力して下さい。"
+            onChangeText={ (inputText) => handleTextInput(inputText, "email") }
+            keyboardType="email-address"
+            inputMode="email"
+            value={email}
+          />
+          <Text style={{color:COLORS.ERROR}}>
+            {emailError}
+          </Text>
 
-        <PasswordEye
-          style={[GlobalStyles.TextInput, styles.TextInput]}
-          onChangeText={ (inputText) => handleTextInput(inputText, "password") }
-          value={password}
-          placeholder="パスワードを入力して下さい。"
-          hint="大文字英字、小文字英字、数字を含む8-14文字の長さで設定してください。"
-          hintStyles={styles.PasswordHint}
-        />
-        <Text>
-          {passwordError}
-        </Text>
+          <PasswordEye
+            style={[GlobalStyles.TextInput, GlobalStyles.DefaultTextInput, {borderColor: passwordBorderColor}]}
+            onChangeText={ (inputText) => handleTextInput(inputText, "password") }
+            value={password}
+            placeholder="パスワードを入力して下さい。"
+            hint="大文字英字、小文字英字、数字を含む8-14文字の長さで設定してください。"
+            hintStyles={styles.PasswordHint}
+          />
+          <Text style={{color:COLORS.ERROR}}>
+            {passwordError}
+          </Text>
 
-        <Button
-          title='アカウント作成'
-          onPress={() => validateValue()}
-        ></Button>
-      </View>
+          <Button
+            title='アカウント作成'
+            onPress={() => validateValue()}
+          ></Button>
+        </View>
+      </KeyboardAwareScrollView>
     </SafeAreaView>
   );
 }
@@ -169,9 +189,6 @@ export default function MailSignUpScreen({navigation, type}) {
 
 
 const styles = StyleSheet.create({
-  TextInput: {
-    width: 250,
-  },
   PasswordHint: {
     width: 250,
   }

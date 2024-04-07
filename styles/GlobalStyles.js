@@ -1,4 +1,5 @@
 import { StyleSheet } from 'react-native';
+import { COLORS } from '../constants/themes';
 
 const GlobalStyles = StyleSheet.create({
   SafeAreaView: {
@@ -12,12 +13,15 @@ const GlobalStyles = StyleSheet.create({
     backgroundColor: "#fffdfa"
   },
 
-  // TextInput>
+  // <TextInput>
   TextInput: {
-    height: 40,
-    margin: 12,
+    minHeight: 40,
     borderWidth: 1,
     padding: 10,
+  },
+  DefaultTextInput: {
+    width: 250,
+    marginTop: 13,
   },
 });
 

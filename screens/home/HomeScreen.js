@@ -1,6 +1,6 @@
 // Homeコンポーネント
 
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, Button } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
@@ -44,6 +44,7 @@ const checkLogin = async (dispatch, navigation) => {
 
 export default function HomeScreen() {
 
+
   const dispatch = useDispatch();
   const uid = useSelector((state) => state.uid.value);
   const navigation = useNavigation();
@@ -57,6 +58,10 @@ export default function HomeScreen() {
   return (
     <>
     <Text>Home</Text>
+    <Button
+      title='初期設定（ニックネーム）'
+      onPress={() => navigation.navigate('初期設定（ニックネーム）')}
+    >新規登録</Button>
     </>
   );
 }
