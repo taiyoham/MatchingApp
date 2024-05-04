@@ -7,7 +7,7 @@ import { useState } from 'react';
 import PasswordEye from 'react-native-password-eye';
 import { auth, db } from '../../../firebaseConfig';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged  } from "firebase/auth";
-import { collection, addDoc } from "firebase/firestore"; 
+import { doc, collection, setDoc } from "firebase/firestore"; 
 import { useDispatch } from 'react-redux';
 import { setUid } from '../../../redux/uidSlice';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
@@ -53,10 +53,7 @@ export default function MailSignUpScreen({navigation, type}) {
   const createData = async (uid) => {
 
     try {
-      const docRef = await addDoc(collection(db, "users"), {
-        uid,
-      });
-      console.log("Document written with ID: ", docRef.id);
+      await setDoc(doc(db, "users", uid), {});
       navigation.navigate("初期設定（ニックネーム）");
     } catch (e) {
       console.error("Error adding document: ", e);

@@ -61,7 +61,11 @@ export default function HomeScreen() {
     <Button
       title='初期設定（ニックネーム）'
       onPress={() => navigation.navigate('初期設定（ニックネーム）')}
-    >新規登録</Button>
+    >ニックネーム初期設定</Button>
+    <Button
+      title='初期設定（画像）'
+      onPress={() => navigation.navigate('初期設定（画像）')}
+    >画像初期設定</Button>
     </>
   );
 }

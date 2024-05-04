@@ -1,4 +1,4 @@
-// アカウント作成後の初期設定（名前）用コンポーネント
+// アカウント作成後の初期設定（自己紹介）用コンポーネント
 
 import { StyleSheet, Text, View, Button, TextInput, } from 'react-native';
 import { useSelector } from 'react-redux';
@@ -27,32 +27,21 @@ const updateNickname = async(uid, nickname, navigation)=> {
 }
 
 
-export default function InitialNameSettingScreen({navigation}) {
+export default function InitialIntroductionSettingScreen({navigation}) {
 
   
   const uid = useSelector((state) => state.uid.value);
-
-
-  const [nickname, setNickname] = useState();
-  const [error, setError] = useState();
-  const [borderColor, setBorderColor] = useState("black");
+  const [introduction, setIntroduction] = useState();
 
   // 「次へ」を押した際に実行する関数
   const SubmitEvent = () => {
-    if(nickname === undefined || nickname === "") {
-      setError("ニックネームを入力して下さい。");
-      setBorderColor(COLORS.ERROR);
-    }else if(nickname.length > 25) {
-      setError("ニックネームは25文字以内にして下さい。");
-    }else {
-      updateNickname(uid, nickname, navigation);
-    }
+    updateNickname(uid, nickname, navigation);
   }
 
 
     // <TextInput>の入力時に実行する関数
     const handleTextInput = (inputText) => {
-      setNickname(inputText);
+      setIntroduction(inputText);
     }
 
 
@@ -62,15 +51,7 @@ export default function InitialNameSettingScreen({navigation}) {
         <KeyboardAwareScrollView>
           <View style={GlobalStyles.Maincontainer}>
 
-          <Text>あなたのニックネームは？</Text>
-          <TextInput
-            style={[GlobalStyles.TextInput, GlobalStyles.DefaultTextInput, {borderColor}]}
-            onChangeText={ (inputText) => handleTextInput(inputText) }
-            placeholder="ニックネームを入力して下さい。"
-            inputMode="text"
-            value={nickname}
-          />
-          <Text style={{color:COLORS.ERROR}}>{error}</Text>
+          <Text>最後に自己紹介文を入力して下さい！</Text>
 
           <Button
             title='次へ'

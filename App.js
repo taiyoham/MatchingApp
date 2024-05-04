@@ -32,8 +32,15 @@ function HomeStackScreen() {
         tabBarStyle: { display: 'none' },
         }} />
       <HomeStack.Screen name="新規登録" component={SignUpScreen} />
-      <HomeStack.Screen name="初期設定（画像）" component={InitialImageSettingScreen} />
+      <HomeStack.Screen name="初期設定（画像）" component={InitialImageSettingScreen} options={{
+        headerShown: false,
+        tabBarStyle: { display: 'none' },
+        }} />
       <HomeStack.Screen name="初期設定（ニックネーム）" component={InitialNameSetting} options={{
+        headerShown: false,
+        tabBarStyle: { display: 'none' },
+        }} />
+      <HomeStack.Screen name="初期設定（自己紹介）" component={InitialIntroductionSetting} options={{
         headerShown: false,
         tabBarStyle: { display: 'none' },
         }} />
